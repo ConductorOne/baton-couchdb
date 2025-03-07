@@ -10,7 +10,7 @@ import (
 var (
 	UsernameField = field.StringField(
 		"username",
-		field.WithDescription("The user name of the CouchDB admin account"),
+		field.WithDescription("The username of the CouchDB admin account"),
 		field.WithRequired(true),
 	)
 	PasswordField = field.StringField(

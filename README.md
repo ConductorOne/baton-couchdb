@@ -2,7 +2,9 @@
 
 # `baton-couchdb` [![Go Reference](https://pkg.go.dev/badge/github.com/conductorone/baton-couchdb.svg)](https://pkg.go.dev/github.com/conductorone/baton-couchdb) ![main ci](https://github.com/conductorone/baton-couchdb/actions/workflows/main.yaml/badge.svg)
 
-`baton-couchdb` is a connector for built using the [Baton SDK](https://github.com/conductorone/baton-sdk).
+`baton-couchdb` is a connector for [CouchDB](https://couchdb.apache.org/) built using the [Baton SDK](https://github.com/conductorone/baton-sdk).
+This connector requires the `username`, `password` and `instance-url` args. When synced, the names of the users and roles of each database of the instance will be listed.
+Granting and revoking of roles is not supported.
 
 Check out [Baton](https://github.com/conductorone/baton) to learn more the project in general.
 
@@ -38,6 +40,7 @@ baton resources
 
 `baton-couchdb` will pull down information about the following resources:
 - Users
+- Roles
 
 # Contributing, Support and Issues
 
@@ -72,6 +75,10 @@ Flags:
   -p, --provisioning                 If this connector supports provisioning, this must be set in order for provisioning actions to be enabled ($BATON_PROVISIONING)
       --ticketing                    This must be set to enable ticketing support ($BATON_TICKETING)
   -v, --version                      version for baton-couchdb
+
+  --username                         The username of the CouchDB admin account
+  --password                         The password of the CouchDB admin account
+  --instance-url                     The url to the CouchDB instance. Include :port if needed
 
 Use "baton-couchdb [command] --help" for more information about a command.
 ```
