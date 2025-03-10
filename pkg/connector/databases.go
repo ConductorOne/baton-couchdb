@@ -38,10 +38,12 @@ func (b *databaseBuilder) List(ctx context.Context, _ *v2.ResourceId, _ *paginat
 }
 
 func (b *databaseBuilder) Entitlements(_ context.Context, _ *v2.Resource, _ *pagination.Token) ([]*v2.Entitlement, string, annotations.Annotations, error) {
+	// This connector serves as a parent resource for users and roles, so it does not have any entitlements.
 	return nil, "", nil, nil
 }
 
 func (b *databaseBuilder) Grants(_ context.Context, _ *v2.Resource, _ *pagination.Token) ([]*v2.Grant, string, annotations.Annotations, error) {
+	// This connector serves as a parent resource for users and roles, so it does not have any grants.
 	return nil, "", nil, nil
 }
 
