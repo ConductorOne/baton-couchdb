@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 
+	cfg "github.com/conductorone/baton-couchdb/pkg/config"
 	"github.com/conductorone/baton-couchdb/pkg/connector"
 	"github.com/conductorone/baton-sdk/pkg/config"
 	"github.com/conductorone/baton-sdk/pkg/connectorbuilder"
 	"github.com/conductorone/baton-sdk/pkg/connectorrunner"
-	"github.com/conductorone/baton-sdk/pkg/field"
 	"github.com/conductorone/baton-sdk/pkg/types"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"github.com/spf13/viper"
@@ -25,9 +25,7 @@ func main() {
 		ctx,
 		"baton-couchdb",
 		getConnector,
-		field.Configuration{
-			Fields: ConfigurationFields,
-		},
+		cfg.Config,
 		connectorrunner.WithDefaultCapabilitiesConnectorBuilder(&connector.Connector{}),
 	)
 	if err != nil {
@@ -50,9 +48,9 @@ func getConnector(ctx context.Context, v *viper.Viper) (types.ConnectorServer, e
 		return nil, err
 	}
 
-	username := v.GetString(UsernameField.FieldName)
-	password := v.GetString(PasswordField.FieldName)
-	instanceURL := v.GetString(InstanceHost.FieldName)
+	username := v.GetString(cfg.UsernameField.FieldName)
+	password := v.GetString(cfg.PasswordField.FieldName)
+	instanceURL := v.GetString(cfg.InstanceHostField.FieldName)
 
 	cb, err := connector.New(ctx, username, password, instanceURL)
 	if err != nil {
