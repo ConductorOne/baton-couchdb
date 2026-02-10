@@ -1,6 +1,6 @@
 ![Baton Logo](./baton-logo.png)
 
-# `baton-couchdb` [![Go Reference](https://pkg.go.dev/badge/github.com/conductorone/baton-couchdb.svg)](https://pkg.go.dev/github.com/conductorone/baton-couchdb) ![main ci](https://github.com/conductorone/baton-couchdb/actions/workflows/main.yaml/badge.svg)
+# `baton-couchdb` [![Go Reference](https://pkg.go.dev/badge/github.com/conductorone/baton-couchdb.svg)](https://pkg.go.dev/github.com/conductorone/baton-couchdb) ![verify](https://github.com/conductorone/baton-couchdb/actions/workflows/verify.yaml/badge.svg)
 
 `baton-couchdb` is a connector for [CouchDB](https://couchdb.apache.org/) built using the [Baton SDK](https://github.com/conductorone/baton-sdk).
 This connector requires the `username`, `password` and `instance-url` args. When synced, the names of the users and roles of each database of the instance will be listed.
