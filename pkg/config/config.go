@@ -16,6 +16,7 @@ var Config = field.NewConfiguration([]field.SchemaField{
 		"password",
 		field.WithDescription("The password of the CouchDB admin account"),
 		field.WithRequired(true),
+		field.WithIsSecret(true),
 	),
 	field.StringField(
 		"instance-url",
