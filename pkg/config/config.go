@@ -35,7 +35,3 @@ var Config = field.NewConfiguration(
 	field.WithIconUrl("/static/app-icons/couchdb.svg"),
 	field.WithHelpUrl("/docs/baton/couchdb"),
 )
-
-func ValidateConfig(c *Couchdb) error {
-	return nil
-}

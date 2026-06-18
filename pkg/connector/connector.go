@@ -5,7 +5,6 @@ import (
 	"io"
 
 	"github.com/conductorone/baton-couchdb/pkg/client"
-	cfg "github.com/conductorone/baton-couchdb/pkg/config"
 
 	v2 "github.com/conductorone/baton-sdk/pb/c1/connector/v2"
 	"github.com/conductorone/baton-sdk/pkg/annotations"
@@ -61,7 +60,3 @@ func New(ctx context.Context, username, password, instanceURL string) (*Connecto
 	}, nil
 }
 
-// NewLambdaConnector returns a new instance of the connector for Lambda deployments.
-func NewLambdaConnector(ctx context.Context, cc *cfg.Couchdb) (*Connector, error) {
-	return New(ctx, cc.Username, cc.Password, cc.InstanceUrl)
-}
