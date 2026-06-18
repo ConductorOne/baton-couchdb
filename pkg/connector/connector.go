@@ -59,4 +59,3 @@ func New(ctx context.Context, username, password, instanceURL string) (*Connecto
 		Client: c,
 	}, nil
 }
-
