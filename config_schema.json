@@ -94,7 +94,9 @@
     },
     {
       "name": "username",
+      "displayName": "Username",
       "description": "The username of the CouchDB admin account",
+      "placeholder": "admin",
       "isRequired": true,
       "stringField": {
         "rules": {
@@ -104,7 +106,9 @@
     },
     {
       "name": "password",
+      "displayName": "Password",
       "description": "The password of the CouchDB admin account",
+      "placeholder": "password",
       "isRequired": true,
       "isSecret": true,
       "stringField": {
@@ -115,7 +119,9 @@
     },
     {
       "name": "instance-url",
+      "displayName": "Instance URL",
       "description": "The url to the CouchDB instance. Include :port if needed",
+      "placeholder": "http://localhost:5984",
       "isRequired": true,
       "stringField": {
         "rules": {
@@ -123,5 +129,8 @@
         }
       }
     }
-  ]
+  ],
+  "displayName": "CouchDB",
+  "helpUrl": "/docs/baton/couchdb",
+  "iconUrl": "/static/app-icons/couchdb.svg"
 }
