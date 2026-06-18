@@ -6,11 +6,9 @@ import (
 
 	"github.com/conductorone/baton-couchdb/pkg/client"
 	v2 "github.com/conductorone/baton-sdk/pb/c1/connector/v2"
-	"github.com/conductorone/baton-sdk/pkg/annotations"
-	"github.com/conductorone/baton-sdk/pkg/pagination"
 	"github.com/conductorone/baton-sdk/pkg/types/entitlement"
 	"github.com/conductorone/baton-sdk/pkg/types/grant"
-	resourceSdk "github.com/conductorone/baton-sdk/pkg/types/resource"
+	rs "github.com/conductorone/baton-sdk/pkg/types/resource"
 )
 
 const permissionName = "assigned"
@@ -24,9 +22,9 @@ func (b *roleBuilder) ResourceType(_ context.Context) *v2.ResourceType {
 	return roleResourceType
 }
 
-func (b *roleBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId, _ *pagination.Token) ([]*v2.Resource, string, annotations.Annotations, error) {
+func (b *roleBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId, opts rs.SyncOpAttrs) ([]*v2.Resource, *rs.SyncOpResults, error) {
 	if parentResourceID == nil {
-		return nil, "", nil, nil
+		return nil, nil, nil
 	}
 
 	var roleResources []*v2.Resource
@@ -34,18 +32,18 @@ func (b *roleBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId,
 
 	users, err := b.retrieveDBUsers(ctx, dbName)
 	if err != nil {
-		return nil, "", nil, err
+		return nil, nil, err
 	}
 
 	for _, user := range users {
 		roleResource, err := parseIntoRoleResource(user, parentResourceID)
 		if err != nil {
-			return nil, "", nil, err
+			return nil, nil, err
 		}
 		roleResources = append(roleResources, roleResource)
 	}
 
-	return roleResources, "", nil, nil
+	return roleResources, nil, nil
 }
 
 func (b *roleBuilder) retrieveDBUsers(ctx context.Context, dbName string) ([]client.User, error) {
@@ -77,7 +75,7 @@ func (b *roleBuilder) retrieveDBUsers(ctx context.Context, dbName string) ([]cli
 	return users, nil
 }
 
-func (b *roleBuilder) Entitlements(_ context.Context, resource *v2.Resource, _ *pagination.Token) ([]*v2.Entitlement, string, annotations.Annotations, error) {
+func (b *roleBuilder) Entitlements(_ context.Context, resource *v2.Resource, opts rs.SyncOpAttrs) ([]*v2.Entitlement, *rs.SyncOpResults, error) {
 	var ret []*v2.Entitlement
 
 	assigmentOptions := []entitlement.EntitlementOption{
@@ -87,10 +85,10 @@ func (b *roleBuilder) Entitlements(_ context.Context, resource *v2.Resource, _ *
 	}
 	ret = append(ret, entitlement.NewPermissionEntitlement(resource, permissionName, assigmentOptions...))
 
-	return ret, "", nil, nil
+	return ret, nil, nil
 }
 
-func (b *roleBuilder) Grants(_ context.Context, resource *v2.Resource, _ *pagination.Token) ([]*v2.Grant, string, annotations.Annotations, error) {
+func (b *roleBuilder) Grants(_ context.Context, resource *v2.Resource, opts rs.SyncOpAttrs) ([]*v2.Grant, *rs.SyncOpResults, error) {
 	var ret []*v2.Grant
 
 	for _, user := range b.UsersCache {
@@ -98,7 +96,7 @@ func (b *roleBuilder) Grants(_ context.Context, resource *v2.Resource, _ *pagina
 		if userRole == resource.Id.Resource {
 			userResource, err := parseIntoUserResource(user, nil)
 			if err != nil {
-				return nil, "", nil, err
+				return nil, nil, err
 			}
 
 			membershipGrant := grant.NewGrant(resource, permissionName, userResource.Id)
@@ -106,7 +104,7 @@ func (b *roleBuilder) Grants(_ context.Context, resource *v2.Resource, _ *pagina
 		}
 	}
 
-	return ret, "", nil, nil
+	return ret, nil, nil
 }
 
 func parseIntoRoleResource(user client.User, parentResourceID *v2.ResourceId) (*v2.Resource, error) {
@@ -119,16 +117,16 @@ func parseIntoRoleResource(user client.User, parentResourceID *v2.ResourceId) (*
 		"database": user.Database,
 	}
 
-	roleTraits := []resourceSdk.RoleTraitOption{
-		resourceSdk.WithRoleProfile(profile),
+	roleTraits := []rs.RoleTraitOption{
+		rs.WithRoleProfile(profile),
 	}
 
-	return resourceSdk.NewRoleResource(
+	return rs.NewRoleResource(
 		displayName,
 		roleResourceType,
 		id,
 		roleTraits,
-		resourceSdk.WithParentResourceID(parentResourceID),
+		rs.WithParentResourceID(parentResourceID),
 	)
 }
 

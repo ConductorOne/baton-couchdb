@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/conductorone/baton-couchdb/pkg/client"
+	cfg "github.com/conductorone/baton-couchdb/pkg/config"
 
 	v2 "github.com/conductorone/baton-sdk/pb/c1/connector/v2"
 	"github.com/conductorone/baton-sdk/pkg/annotations"
@@ -15,9 +16,9 @@ type Connector struct {
 	Client *client.CouchDBClient
 }
 
-// ResourceSyncers returns a ResourceSyncer for each resource type that should be synced from the upstream service.
-func (c *Connector) ResourceSyncers(_ context.Context) []connectorbuilder.ResourceSyncer {
-	return []connectorbuilder.ResourceSyncer{
+// ResourceSyncers returns a ResourceSyncerV2 for each resource type that should be synced from the upstream service.
+func (c *Connector) ResourceSyncers(_ context.Context) []connectorbuilder.ResourceSyncerV2 {
+	return []connectorbuilder.ResourceSyncerV2{
 		newUserBuilder(c.Client),
 		newRoleBuilder(c.Client),
 		newDatabaseBuilder(c.Client),
@@ -58,4 +59,9 @@ func New(ctx context.Context, username, password, instanceURL string) (*Connecto
 	return &Connector{
 		Client: c,
 	}, nil
+}
+
+// NewLambdaConnector returns a new instance of the connector for Lambda deployments.
+func NewLambdaConnector(ctx context.Context, cc *cfg.Couchdb) (*Connector, error) {
+	return New(ctx, cc.Username, cc.Password, cc.InstanceUrl)
 }
