@@ -121,7 +121,7 @@
       "name": "instance-url",
       "displayName": "Instance URL",
       "description": "The url to the CouchDB instance. Include :port if needed",
-      "placeholder": "http://localhost:5984",
+      "placeholder": "https://couchdb.example.com:5984",
       "isRequired": true,
       "stringField": {
         "rules": {
