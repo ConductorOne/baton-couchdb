@@ -28,7 +28,7 @@ var Config = field.NewConfiguration(
 			field.WithDescription("The url to the CouchDB instance. Include :port if needed"),
 			field.WithRequired(true),
 			field.WithDisplayName("Instance URL"),
-			field.WithPlaceholder("http://localhost:5984"),
+			field.WithPlaceholder("https://couchdb.example.com:5984"),
 		),
 	},
 	field.WithConnectorDisplayName("CouchDB"),
