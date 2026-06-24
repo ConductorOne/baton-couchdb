@@ -6,11 +6,9 @@ import (
 	"strconv"
 
 	"github.com/conductorone/baton-couchdb/pkg/client"
-	resourceSdk "github.com/conductorone/baton-sdk/pkg/types/resource"
+	rs "github.com/conductorone/baton-sdk/pkg/types/resource"
 
 	v2 "github.com/conductorone/baton-sdk/pb/c1/connector/v2"
-	"github.com/conductorone/baton-sdk/pkg/annotations"
-	"github.com/conductorone/baton-sdk/pkg/pagination"
 )
 
 type userBuilder struct {
@@ -23,9 +21,9 @@ func (b *userBuilder) ResourceType(_ context.Context) *v2.ResourceType {
 
 // List returns all the users from the database as resource objects.
 // Users include a UserTrait because they are the 'shape' of a standard user.
-func (b *userBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId, _ *pagination.Token) ([]*v2.Resource, string, annotations.Annotations, error) {
+func (b *userBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId, opts rs.SyncOpAttrs) ([]*v2.Resource, *rs.SyncOpResults, error) {
 	if parentResourceID == nil {
-		return nil, "", nil, nil
+		return nil, nil, nil
 	}
 
 	var users []client.User
@@ -34,34 +32,34 @@ func (b *userBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId,
 	dbName := parentResourceID.Resource
 	dbSecurityObject, err := b.Client.GetSecurityObject(ctx, dbName)
 	if err != nil {
-		return nil, "", nil, err
+		return nil, nil, err
 	}
 
 	if dbSecurityObject == nil {
-		return nil, "", nil, fmt.Errorf("the security object of '%s' database couldn't be retrieved", dbName)
+		return nil, nil, fmt.Errorf("the security object of '%s' database couldn't be retrieved", dbName)
 	}
 
 	adminUsers, err := extractUsers(dbSecurityObject.Admins, dbName)
 	if err != nil {
-		return nil, "", nil, err
+		return nil, nil, err
 	}
 	users = append(users, adminUsers...)
 
 	memberUsers, err := extractUsers(dbSecurityObject.Members, dbName)
 	if err != nil {
-		return nil, "", nil, err
+		return nil, nil, err
 	}
 	users = append(users, memberUsers...)
 
 	for _, user := range users {
 		userResource, err := parseIntoUserResource(user, parentResourceID)
 		if err != nil {
-			return nil, "", nil, err
+			return nil, nil, err
 		}
 		userResources = append(userResources, userResource)
 	}
 
-	return userResources, "", nil, nil
+	return userResources, nil, nil
 }
 
 func extractUsers(secComponent client.SecurityComponent, dbName string) ([]client.User, error) {
@@ -91,13 +89,13 @@ func extractUsers(secComponent client.SecurityComponent, dbName string) ([]clien
 }
 
 // Entitlements always returns an empty slice for users.
-func (b *userBuilder) Entitlements(_ context.Context, _ *v2.Resource, _ *pagination.Token) ([]*v2.Entitlement, string, annotations.Annotations, error) {
-	return nil, "", nil, nil
+func (b *userBuilder) Entitlements(_ context.Context, _ *v2.Resource, opts rs.SyncOpAttrs) ([]*v2.Entitlement, *rs.SyncOpResults, error) {
+	return nil, nil, nil
 }
 
 // Grants always returns an empty slice for users since they don't have any entitlements.
-func (b *userBuilder) Grants(_ context.Context, _ *v2.Resource, _ *pagination.Token) ([]*v2.Grant, string, annotations.Annotations, error) {
-	return nil, "", nil, nil
+func (b *userBuilder) Grants(_ context.Context, _ *v2.Resource, opts rs.SyncOpAttrs) ([]*v2.Grant, *rs.SyncOpResults, error) {
+	return nil, nil, nil
 }
 
 func parseIntoUserResource(user client.User, parentResourceID *v2.ResourceId) (*v2.Resource, error) {
@@ -111,17 +109,17 @@ func parseIntoUserResource(user client.User, parentResourceID *v2.ResourceId) (*
 		"database": user.Database,
 	}
 
-	userTraits := []resourceSdk.UserTraitOption{
-		resourceSdk.WithUserProfile(profile),
-		resourceSdk.WithStatus(userStatus),
+	userTraits := []rs.UserTraitOption{
+		rs.WithUserProfile(profile),
+		rs.WithStatus(userStatus),
 	}
 
-	return resourceSdk.NewUserResource(
+	return rs.NewUserResource(
 		displayName,
 		userResourceType,
 		id,
 		userTraits,
-		resourceSdk.WithParentResourceID(parentResourceID),
+		rs.WithParentResourceID(parentResourceID),
 	)
 }
 
