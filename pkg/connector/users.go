@@ -109,16 +109,15 @@ func parseIntoUserResource(user client.User, parentResourceID *v2.ResourceId) (*
 		"database": user.Database,
 	}
 
-	userTraits := []rs.UserTraitOption{
-		rs.WithUserProfile(profile),
-		rs.WithStatus(userStatus),
-	}
+	userTraits := []rs.UserTraitOption{}
 
 	return rs.NewUserResource(
 		displayName,
 		userResourceType,
 		id,
 		userTraits,
+		rs.WithResourceProfile(profile),
+		rs.WithResourceStatus(v2.Status_ResourceStatus(userStatus), ""),
 		rs.WithParentResourceID(parentResourceID),
 	)
 }
