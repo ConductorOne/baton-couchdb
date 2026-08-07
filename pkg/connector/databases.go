@@ -50,15 +50,14 @@ func parseIntoDatabaseResource(database string) (*v2.Resource, error) {
 		"database_name": database,
 	}
 
-	groupTraitOptions := []rs.GroupTraitOption{
-		rs.WithGroupProfile(profile),
-	}
+	groupTraitOptions := []rs.GroupTraitOption{}
 
 	ret, err := rs.NewGroupResource(
 		database,
 		databaseResourceType,
 		database,
 		groupTraitOptions,
+		rs.WithResourceProfile(profile),
 		rs.WithAnnotation(
 			&v2.ChildResourceType{ResourceTypeId: userResourceType.Id},
 			&v2.ChildResourceType{ResourceTypeId: roleResourceType.Id},

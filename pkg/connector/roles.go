@@ -117,15 +117,14 @@ func parseIntoRoleResource(user client.User, parentResourceID *v2.ResourceId) (*
 		"database": user.Database,
 	}
 
-	roleTraits := []rs.RoleTraitOption{
-		rs.WithRoleProfile(profile),
-	}
+	roleTraits := []rs.RoleTraitOption{}
 
 	return rs.NewRoleResource(
 		displayName,
 		roleResourceType,
 		id,
 		roleTraits,
+		rs.WithResourceProfile(profile),
 		rs.WithParentResourceID(parentResourceID),
 	)
 }
